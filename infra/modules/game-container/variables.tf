@@ -42,13 +42,13 @@ variable "ports" {
 }
 
 variable "environment_variables" {
-  type        = map(any)
+  type        = map(string)
   description = "environment variables for the game container"
   default     = {}
 }
 
 variable "secure_environment_variables" {
-  type        = map(any)
+  type        = map(string)
   description = "secret environment variables for the game container (todo: prefer init container)"
   default     = {}
   sensitive   = true

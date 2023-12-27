@@ -23,4 +23,8 @@ module "minecraft_vanilla" {
     protocol = "TCP"
     external = true
   }]
+  environment_variables = {
+    "EULA"   = "TRUE"
+    "MEMORY" = "7.5GB"
+  }
 }
