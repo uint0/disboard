@@ -29,7 +29,6 @@ resource "azurerm_container_group" "container" {
     volume {
       name       = "data"
       mount_path = "/data" # TODO: configurable
-      empty_dir  = true
 
       storage_account_name = azurerm_storage_account.storage.name
       storage_account_key  = azurerm_storage_account.storage.primary_access_key
@@ -66,6 +65,12 @@ resource "azurerm_storage_account" "storage" {
 resource "azurerm_storage_share" "game_data" {
   name                 = "gamedata"
   storage_account_name = azurerm_storage_account.storage.name
-  access_tier          = "Premium"
   quota                = var.resources.disk_gb
+
+  acl {
+    id = "default"
+    access_policy {
+      permissions = "rwdl"
+    }
+  }
 }
