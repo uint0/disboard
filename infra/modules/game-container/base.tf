@@ -49,7 +49,9 @@ resource "azurerm_container_group" "container" {
     protocol = each.protocol
   } if each.external]
 
-  tags = local.default_tags
+  tags = merge(local.default_tags, {
+    game_component = "compute",
+  })
 }
 
 resource "azurerm_storage_account" "storage" {
@@ -59,7 +61,9 @@ resource "azurerm_storage_account" "storage" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
-  tags = local.default_tags
+  tags = merge(local.default_tags, {
+    game_component = "storage"
+  })
 }
 
 resource "azurerm_storage_share" "game_data" {
