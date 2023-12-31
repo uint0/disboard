@@ -1,8 +1,3 @@
-resource "azurerm_resource_group" "games" {
-  name     = "games"
-  location = "westus2"
-}
-
 module "minecraft_vanilla" {
   source = "./modules/game-container"
 
