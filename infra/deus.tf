@@ -33,7 +33,9 @@ resource "azurerm_linux_function_app" "deus" {
   service_plan_id            = azurerm_service_plan.deus.id
 
   app_settings = {
-    SUBSCRIPTION_ID = data.azurerm_subscription.current.subscription_id
+    SUBSCRIPTION_ID          = data.azurerm_subscription.current.subscription_id
+    DEFAULT_RESOURCE_GROUP   = azurerm_resource_group.games.name
+    WEBSITE_RUN_FROM_PACKAGE = "1"
   }
 
   identity {
@@ -44,6 +46,12 @@ resource "azurerm_linux_function_app" "deus" {
     application_stack {
       node_version = 18
     }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"]
+    ]
   }
 
   tags = local.deus_default_tags

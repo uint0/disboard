@@ -4,7 +4,6 @@
     "target": "es2022",
     "outDir": "dist",
     "rootDir": ".",
-    "sourceMap": false,
     "strict": true
   }
 }
