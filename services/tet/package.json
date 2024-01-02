@@ -1,0 +1,32 @@
+{
+  "name": "tet",
+  "version": "1.0.0",
+  "description": "disboard user interface",
+  "main": "dist/src/functions/*.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "clean": "rimraf dist",
+    "prestart": "npm run clean && npm run build",
+    "start": "func start",
+    "test": "echo \"No tests yet...\"",
+    "format": "prettier -w src/"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.0.0",
+    "@azure/storage-queue": "^12.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.x",
+    "azure-functions-core-tools": "^4.x",
+    "azurite": "^3.29.0",
+    "prettier": "^3.1.1",
+    "rimraf": "^5.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^4.0.0"
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "printWidth": 120
+  }
+}
