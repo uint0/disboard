@@ -4,6 +4,12 @@ locals {
   }
 }
 
+resource "azurerm_resource_group" "deus" {
+  name     = "deus"
+  location = local.default_workload_location
+  tags     = local.deus_default_tags
+}
+
 resource "azurerm_storage_account" "disboarddeus" {
   name                     = "disboarddeus"
   location                 = local.default_workload_location
