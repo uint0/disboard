@@ -9,6 +9,9 @@ instead it allows control over
 ## Apis
 
 ```
+GET /api/v1/game
+GET /api/v1/game/<game>
+GEt /api/v1/game/<game>/<instance>
 GET,PUT /api/v1/game/<game>/<name>/status
 ```
 
