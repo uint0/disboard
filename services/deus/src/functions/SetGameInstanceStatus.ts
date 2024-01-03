@@ -19,10 +19,8 @@ const InstanceStatusRequest = Type.Object({
 });
 type TInstanceStatusRequest = Static<typeof InstanceStatusRequest>;
 
-type DefaultHttpRequest = HttpRequest & WithPath<TGameInstancePath>;
-
 async function updateGameInstanceStatus(
-    req: DefaultHttpRequest & WithBody<TInstanceStatusRequest>,
+    req: HttpRequest & WithPath<TGameInstancePath> & WithBody<TInstanceStatusRequest>,
     _: AzureHttpRequestContext,
 ): Promise<HttpResponse<HttpErrorBody | { previousStatus: string }>> {
     const { game, instance } = req.path;
@@ -54,33 +52,6 @@ async function updateGameInstanceStatus(
         previousStatus: effectiveCurrentStatus,
     });
 }
-
-async function getGameInstanceStatus(
-    req: DefaultHttpRequest,
-    _: AzureHttpRequestContext,
-): Promise<HttpResponse<HttpErrorBody | { status: string }>> {
-    const { game, instance } = req.path;
-
-    const gameInstance = await GameInstanceManager.find(game, instance);
-    if (gameInstance === null) {
-        return response.notFound({
-            error: `game instance ${game}/${instance} not found or does not have tagged compute component`,
-        });
-    }
-
-    return response.ok({
-        status: await gameInstance.getEffectiveStatus(),
-    });
-}
-
-app.get("GetGameInstanceStatus", {
-    route: "v1/game/{game}/{instance}/status",
-    authLevel: "anonymous",
-    handler: httpHandler({
-        path: GameInstancePath,
-        handler: getGameInstanceStatus,
-    }),
-});
 
 app.put("UpdateGameInstanceStatus", {
     route: "v1/game/{game}/{instance}/status",
