@@ -41,7 +41,109 @@ app.storageQueue("DiscordInteractionProcessor", {
                     await respond.text(pretty);
                     break;
                 case "get":
-                    await respond.text("get tbd");
+                    if (command.options.game === undefined && command.options.instance !== undefined) {
+                        await respond.text("Cannot get by instance without game");
+                    } else if (command.options.game === undefined && command.options.instance === undefined) {
+                        const x = await deus.listGameInstances();
+                        if ("error" in x) {
+                            await respond.text(
+                                `❗️ Retrieving \`${command.options.game}/${command.options.instance}\` failed:\n\`\`\`${x.error.error}\`\`\``,
+                            );
+                        } else {
+                            await respond.text(
+                                `Available games:\n` +
+                                    x.response.games
+                                        .flatMap((g) => [
+                                            `- \`${g.game}\``,
+                                            ...g.instances.map((i) => [`  - \`${i.instance}\``]),
+                                        ])
+                                        .join("\n"),
+                            );
+                        }
+                    } else if (command.options.instance === undefined) {
+                        const x = await deus.listInstancesForGame(command.options.game);
+                        if ("error" in x) {
+                            await respond.text(
+                                `❗️ Retrieving \`${command.options.game}/${command.options.instance}\` failed:\n\`\`\`${x.error.error}\`\`\``,
+                            );
+                        } else {
+                            await respond.text(
+                                `Available instances for \`${command.options.game}\`:\n` +
+                                    x.response.instances.map((i) => `- \`${i.instance}\``).join("\n"),
+                            );
+                        }
+                    } else {
+                        const x = await deus.getGameInstance({
+                            game: command.options.game,
+                            instance: command.options.instance,
+                        });
+                        if ("error" in x) {
+                            await respond.text(
+                                `❗️ Retrieving \`${command.options.game}/${command.options.instance}\` failed:\n\`\`\`${x.error.error}\`\`\``,
+                            );
+                        } else {
+                            // TODO: move to better location
+                            const { response } = x;
+                            await respond.raw({
+                                components: [
+                                    {
+                                        type: 1,
+                                        components: [
+                                            {
+                                                style: 3,
+                                                label: `[WIP] Start`,
+                                                custom_id: `START`,
+                                                disabled: response.status === "Running",
+                                                type: 2,
+                                            },
+                                            {
+                                                style: 4,
+                                                label: `[WIP] Stop`,
+                                                custom_id: `STOP`,
+                                                disabled: response.status === "Stopped",
+                                                type: 2,
+                                            },
+                                            {
+                                                style: 1,
+                                                label: `[WIP] Restart`,
+                                                custom_id: `RESTART`,
+                                                disabled: response.status === "Stopped",
+                                                type: 2,
+                                            },
+                                        ],
+                                    },
+                                ],
+                                embeds: [
+                                    {
+                                        type: "rich",
+                                        title: `${response.game} / ${response.instance}`,
+                                        description: "",
+                                        color: response.status == "Running" ? 0x00ff00 : 0xff0000,
+                                        fields: [
+                                            {
+                                                name: `Game`,
+                                                value: response.game,
+                                                inline: true,
+                                            },
+                                            {
+                                                name: `Instance`,
+                                                value: response.instance,
+                                                inline: true,
+                                            },
+                                            {
+                                                name: `Status`,
+                                                value: response.status,
+                                                inline: true,
+                                            },
+                                        ],
+                                        author: {
+                                            name: `Disboard`,
+                                        },
+                                    },
+                                ],
+                            });
+                        }
+                    }
                     break;
                 default: {
                     await respond.text(`Unknown subcommand ${command.subcommand}`);

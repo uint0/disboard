@@ -1,5 +1,8 @@
 type WebhookResponse = {
-    content: string;
+    content?: string;
+    // TODO: not any
+    components?: any;
+    embeds?: any;
 };
 
 export default class DiscordDeferredReponder {
@@ -12,10 +15,10 @@ export default class DiscordDeferredReponder {
     }
 
     async text(content: string): Promise<void> {
-        await this.respond({ content });
+        await this.raw({ content });
     }
 
-    async respond(response: WebhookResponse): Promise<void> {
+    async raw(response: WebhookResponse): Promise<void> {
         const resp = await fetch(
             `https://discordapp.com/api/webhooks/${this.applicationId}/${this.token}/messages/@original`,
             {
