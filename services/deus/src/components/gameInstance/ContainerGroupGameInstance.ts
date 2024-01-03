@@ -1,5 +1,5 @@
 import { ContainerInstanceManagementClient } from "@azure/arm-containerinstance";
-import GameInstance, { GameInstanceEffectiveState } from "./GameInstance";
+import GameInstance, { GameInstanceEffectiveState, GameInstancePointer } from "./GameInstance";
 import { DefaultAzureCredential } from "@azure/identity";
 import { DEFAULT_RESOURCE_GROUP, SUBSCRIPTION_ID } from "../../constants/azure";
 import { GenericResourceExpanded } from "@azure/arm-resources";
@@ -26,8 +26,8 @@ export default class ContainerGroupGameInstance extends GameInstance {
     private client: ContainerInstanceManagementClient;
     private genericCompute: azt.StrictGenericResourceExpanded;
 
-    constructor({ compute }: { compute: GenericResourceExpanded }) {
-        super();
+    constructor(pointer: GameInstancePointer, { compute }: { compute: GenericResourceExpanded }) {
+        super(pointer);
         this.client = ContainerGroupGameInstance.defaultClient;
         this.genericCompute = azt.strictGenericResourceExpanded(compute);
     }

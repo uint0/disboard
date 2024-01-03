@@ -10,13 +10,8 @@ import {
     WithBody,
     WithPath,
 } from "../framework/web/types";
-import GameInstanceBuilder from "../components/gameInstance";
-
-const InstanceStatusParams = Type.Object({
-    game: Type.String(),
-    instance: Type.String(),
-});
-type TInstanceStatusParams = Static<typeof InstanceStatusParams>;
+import GameInstanceManager from "../components/gameInstance";
+import { GameInstancePath, TGameInstancePath } from "./models";
 
 const InstanceStatusRequest = Type.Object({
     status: Type.Union([Type.Literal("Running"), Type.Literal("Stopped")]),
@@ -24,7 +19,7 @@ const InstanceStatusRequest = Type.Object({
 });
 type TInstanceStatusRequest = Static<typeof InstanceStatusRequest>;
 
-type DefaultHttpRequest = HttpRequest & WithPath<TInstanceStatusParams>;
+type DefaultHttpRequest = HttpRequest & WithPath<TGameInstancePath>;
 
 async function updateGameInstanceStatus(
     req: DefaultHttpRequest & WithBody<TInstanceStatusRequest>,
@@ -33,7 +28,7 @@ async function updateGameInstanceStatus(
     const { game, instance } = req.path;
     const { status, transitionPolicy } = req.body;
 
-    const gameInstance = await GameInstanceBuilder.find(game, instance);
+    const gameInstance = await GameInstanceManager.find(game, instance);
     if (gameInstance === null) {
         return response.notFound({
             error: `game instance ${game}/${instance} not found or does not have tagged compute component`,
@@ -66,7 +61,7 @@ async function getGameInstanceStatus(
 ): Promise<HttpResponse<HttpErrorBody | { status: string }>> {
     const { game, instance } = req.path;
 
-    const gameInstance = await GameInstanceBuilder.find(game, instance);
+    const gameInstance = await GameInstanceManager.find(game, instance);
     if (gameInstance === null) {
         return response.notFound({
             error: `game instance ${game}/${instance} not found or does not have tagged compute component`,
@@ -82,7 +77,7 @@ app.get("GetGameInstanceStatus", {
     route: "v1/game/{game}/{instance}/status",
     authLevel: "anonymous",
     handler: httpHandler({
-        path: InstanceStatusParams,
+        path: GameInstancePath,
         handler: getGameInstanceStatus,
     }),
 });
@@ -91,7 +86,7 @@ app.put("UpdateGameInstanceStatus", {
     route: "v1/game/{game}/{instance}/status",
     authLevel: "anonymous",
     handler: httpHandler({
-        path: InstanceStatusParams,
+        path: GameInstancePath,
         body: InstanceStatusRequest,
         handler: updateGameInstanceStatus,
     }),
