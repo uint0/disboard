@@ -36,7 +36,7 @@ module "deus_function" {
   resource_group_name = azurerm_resource_group.deus.name
   app_settings = {
     DEFAULT_RESOURCE_GROUP = azurerm_resource_group.games.name
-    SUBSCRIPTION_ID        = data.azurerm_subscription.current.id
+    SUBSCRIPTION_ID        = data.azurerm_subscription.current.subscription_id
   }
   role = {
     id    = azurerm_role_definition.deus_execution_role.role_definition_resource_id

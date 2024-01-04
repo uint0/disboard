@@ -17,6 +17,7 @@ resource "azurerm_role_definition" "tet_execution_role" {
 
   permissions {
     actions = [
+      "Microsoft.Storage/storageAccounts/listkeys/action",
       "Microsoft.Storage/storageAccounts/queueServices/read",
       "Microsoft.Storage/storageAccounts/queueServices/write",
     ]
