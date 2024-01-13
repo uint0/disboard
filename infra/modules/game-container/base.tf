@@ -61,6 +61,15 @@ resource "azurerm_container_group" "container" {
   tags = merge(local.default_tags, {
     game_component = "compute",
   })
+
+  provisioner "local-exec" {
+    command = "az container stop --name $name --resource-group $resource_group"
+    environment = {
+      name = "game-${local.slug}"
+      resource_group = var.resource_group_name
+    }
+    when = create
+  }
 }
 
 resource "azurerm_storage_account" "storage" {

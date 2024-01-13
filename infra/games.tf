@@ -33,7 +33,7 @@ module "minecraft_atm7_skyblock" {
   location            = "australiaeast"
   resource_group_name = azurerm_resource_group.games.name
 
-  image = "itzg/minecraft-server"
+  image = "itzg/minecraft-server:java17-graalvm"
   resources = {
     cpu       = 3
     memory_gb = 10
@@ -44,10 +44,6 @@ module "minecraft_atm7_skyblock" {
     protocol = "TCP"
     external = true
   }]
-  liveness = {
-    exec                  = ["/usr/local/bin/mc-health"]
-    initial_delay_seconds = 120
-  }
   environment_variables = {
     EULA                       = "TRUE"
     TYPE                       = "CURSEFORGE"
