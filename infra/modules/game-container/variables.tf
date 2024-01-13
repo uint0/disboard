@@ -54,6 +54,15 @@ variable "secure_environment_variables" {
   sensitive   = true
 }
 
+variable "liveness" {
+  type = object({
+    exec                  = list(string)
+    initial_delay_seconds = number
+  })
+  description = "an optional liveness probe"
+  default     = null
+}
+
 variable "net_access_type" {
   type        = string
   description = "the network availability of the game. Public indicates the game can be accessed from the public internet"

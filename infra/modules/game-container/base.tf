@@ -13,6 +13,7 @@ resource "azurerm_container_group" "container" {
   location            = var.location
   resource_group_name = var.resource_group_name
   ip_address_type     = title(var.net_access_type)
+  dns_name_label      = "${var.name}-${var.game}-disboard"
   os_type             = title(var.os_type)
   restart_policy      = "Always"
 
@@ -40,6 +41,14 @@ resource "azurerm_container_group" "container" {
       content {
         port     = ports.value.port
         protocol = ports.value.protocol
+      }
+    }
+
+    dynamic "liveness_probe" {
+      for_each = var.liveness == null ? [] : [1]
+      content {
+        exec                  = var.liveness.exec
+        initial_delay_seconds = var.liveness.initial_delay_seconds
       }
     }
   }
