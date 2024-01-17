@@ -65,7 +65,7 @@ resource "azurerm_container_group" "container" {
   provisioner "local-exec" {
     command = "az container stop --name $name --resource-group $resource_group"
     environment = {
-      name = "game-${local.slug}"
+      name           = "game-${local.slug}"
       resource_group = var.resource_group_name
     }
     when = create

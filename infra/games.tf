@@ -58,3 +58,37 @@ module "minecraft_atm7_skyblock" {
     LEVEL_TYPE                 = "skyblockbuilder:skyblock"
   }
 }
+
+module "minecraft_magiculture2" {
+  source = "./modules/game-container"
+
+  game = "minecraft"
+  name = "magiculture2"
+
+  location            = "australiaeast"
+  resource_group_name = azurerm_resource_group.games.name
+
+  image = "itzg/minecraft-server:java8-graalvm-ce"
+  resources = {
+    cpu       = 3
+    memory_gb = 10
+    disk_gb   = 16
+  }
+  ports = [{
+    port     = 25565
+    protocol = "TCP"
+    external = true
+  }]
+  environment_variables = {
+    EULA                       = "TRUE"
+    TYPE                       = "CURSEFORGE"
+    CF_SERVER_MOD              = "https://mediafilez.forgecdn.net/files/4807/151/MC2+Server+Files+-+0.8.7.3.zip"
+    MEMORY                     = "8G"
+    ENABLE_ROLLING_LOGS        = "true"
+    SPAWN_PROTECTION           = "0"
+    OVERRIDE_SERVER_PROPERTIES = "true"
+    DIFFICULTY                 = "hard"
+    MAX_TICK_TIME              = "-1"
+    ALLOW_FLIGHT               = "true"
+  }
+}
