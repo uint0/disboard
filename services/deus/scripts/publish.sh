@@ -14,5 +14,5 @@ pushd "$build_dir"
 npm install --omit=dev
 zip -r deus.zip *
 
-az functionapp deployment source config-zip -g deus -n disboarddeus --src ./deus.zip
+az functionapp deployment source config-zip -g deus -n disboarddeus-02 --src ./deus.zip
 popd

@@ -92,3 +92,15 @@ module "minecraft_magiculture2" {
     ALLOW_FLIGHT               = "true"
   }
 }
+
+module "satisfactory_vanilla_linguine" {
+  source = "./modules/game-vm"
+
+  game = "satisfactory"
+  name = "linguine"
+
+  location = "australiaeast"
+  resource_group_name = azurerm_resource_group.games.name
+
+
+}

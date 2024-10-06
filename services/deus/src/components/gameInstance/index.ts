@@ -1,11 +1,17 @@
 import { GenericResourceExpanded, ResourceManagementClient } from "@azure/arm-resources";
 import { DefaultAzureCredential } from "@azure/identity";
 import GameInstance from "./GameInstance";
-import { DEFAULT_RESOURCE_GROUP, SUBSCRIPTION_ID } from "../../constants/azure";
+import { DEFAULT_RESOURCE_GROUP, SUBSCRIPTION_ID, TENANT_ID } from "../../constants/azure";
 import ContainerGroupGameInstance from "./ContainerGroupGameInstance";
+import VirtualMachineGameInstance from "./VirtualMachineGameInstance";
 
 export default class GameInstanceManager {
-    private static resourcesClient = new ResourceManagementClient(new DefaultAzureCredential(), SUBSCRIPTION_ID);
+    static HANDLED_AZURE_TYPE = "Microsoft.Compute/virtualMachines";
+
+    private static resourcesClient = new ResourceManagementClient(new DefaultAzureCredential({
+        tenantId: TENANT_ID,
+        authorityHost: `https://login.microsoftonline.com/${TENANT_ID}` 
+    }), SUBSCRIPTION_ID);
 
     static async list(game?: string): Promise<GameInstance[]> {
         let filter = game === undefined ? undefined : `tagName eq 'game' and tagValue eq '${game}'`;
@@ -73,6 +79,8 @@ export default class GameInstanceManager {
         switch (resource.type) {
             case ContainerGroupGameInstance.HANDLED_AZURE_TYPE:
                 return new ContainerGroupGameInstance({ game, instance }, { compute: resource });
+            case VirtualMachineGameInstance.HANDLED_AZURE_TYPE:
+                return new VirtualMachineGameInstance({ game, instance }, { compute: resource });
             default:
                 throw Error(`unsupported game resource type ${resource.type} for ${resource.name} [${resource.id})]`);
         }

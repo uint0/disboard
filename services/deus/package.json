@@ -13,6 +13,7 @@
     "format": "prettier -w src/"
   },
   "dependencies": {
+    "@azure/arm-compute": "^22.1.0",
     "@azure/arm-containerinstance": "^9.1.0",
     "@azure/arm-resources": "^5.2.0",
     "@azure/functions": "^4.0.0",

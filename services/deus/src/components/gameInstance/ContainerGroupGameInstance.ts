@@ -1,7 +1,7 @@
 import { ContainerInstanceManagementClient } from "@azure/arm-containerinstance";
 import GameInstance, { GameInstanceEffectiveState, GameInstancePointer } from "./GameInstance";
 import { DefaultAzureCredential } from "@azure/identity";
-import { DEFAULT_RESOURCE_GROUP, SUBSCRIPTION_ID } from "../../constants/azure";
+import { DEFAULT_RESOURCE_GROUP, SUBSCRIPTION_ID, TENANT_ID } from "../../constants/azure";
 import { GenericResourceExpanded } from "@azure/arm-resources";
 import * as azt from "../../types/azure/strict";
 
@@ -21,7 +21,13 @@ function guardActualState(state: string) {
 export default class ContainerGroupGameInstance extends GameInstance {
     static HANDLED_AZURE_TYPE = "Microsoft.ContainerInstance/containerGroups";
 
-    private static defaultClient = new ContainerInstanceManagementClient(new DefaultAzureCredential(), SUBSCRIPTION_ID);
+    private static defaultClient = new ContainerInstanceManagementClient(
+        new DefaultAzureCredential({
+            tenantId: TENANT_ID,
+            authorityHost: `https://login.microsoftonline.com/${TENANT_ID}` 
+        }),
+        SUBSCRIPTION_ID
+    );
 
     private client: ContainerInstanceManagementClient;
     private genericCompute: azt.StrictGenericResourceExpanded;
