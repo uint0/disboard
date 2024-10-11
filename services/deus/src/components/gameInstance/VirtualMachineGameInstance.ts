@@ -55,6 +55,6 @@ export default class VirtualMachineGameInstance extends GameInstance {
     }
     
     async stop(): Promise<void> {
-        await this.client.virtualMachines.beginPowerOff(DEFAULT_RESOURCE_GROUP, this.genericCompute.name);
+        await this.client.virtualMachines.beginDeallocate(DEFAULT_RESOURCE_GROUP, this.genericCompute.name);
     }
 }
